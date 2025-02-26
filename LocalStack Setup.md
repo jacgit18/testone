@@ -162,19 +162,3 @@ This setup is used to locally develop and test an AWS-based workflow involving:
 By using **LocalStack**, developers can simulate AWS services without incurring costs or requiring internet access.
 
 
-#export AMS PROFILE-GR_GG_COF_AMS_Sandbox_TempPoCAccess
-
-export PEPON VON PROJECT-1
-
-export DOCKER JOST"unix://SODE)/.colina/default/docker.sock"
-
-alias start-localstack'docker run -rm-it- LOCALSTACK API KEY-1s-RaYDvUSA-2944-KIVI-YA-IMAdUPZbe94-94566:4566-94571:4571/var/run/docker.sock:/var/run/docker.sock localstack/localstack
-
-export LOCALSTACK AUTHOR-RaYDvUSA-2944-RIVI-MEYA-IMAJUPIbe94"
-
-export ACTIVATE PRO-D
-
-export AWS ACCESS KEY TO"test"
-
-export AMS SECRET ACCESS REVW"test" export S DEFAULT REGION"us-cast-1"
-
