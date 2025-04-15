@@ -409,3 +409,105 @@ You can test this locally by:
 ---
 
 If you want, I can help generate a full working example (including mock Lambda and Step Function definition) that you can use with LocalStack or deploy to AWS. Just say the word.
+
+
+
+
+Here's how to **create a Step Function** in AWS that **uses SNS (Simple Notification Service)**, and how to **invoke it**.
+
+---
+
+### **Step-by-step guide:**
+
+#### **1. Create an SNS Topic**
+You can do this via the console or CLI:
+```bash
+aws sns create-topic --name MyTopic
+```
+
+Take note of the **Topic ARN** from the output.
+
+---
+
+#### **2. Create an IAM Role for Step Functions**
+The role must allow Step Functions to publish to SNS.
+
+Here’s a basic trust policy:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "states.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+```
+
+Attach a permission policy like this:
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "sns:Publish",
+      "Resource": "arn:aws:sns:REGION:ACCOUNT_ID:MyTopic"
+    }
+  ]
+}
+```
+
+---
+
+#### **3. Create the Step Function**
+
+Here's a sample Step Function definition (Amazon States Language):
+```json
+{
+  "Comment": "A Step Function that publishes to SNS",
+  "StartAt": "PublishToSNS",
+  "States": {
+    "PublishToSNS": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Message": "Hello from Step Functions!",
+        "TopicArn": "arn:aws:sns:REGION:ACCOUNT_ID:MyTopic"
+      },
+      "End": true
+    }
+  }
+}
+```
+
+Create the state machine via CLI:
+```bash
+aws stepfunctions create-state-machine \
+  --name "SnsStepFunction" \
+  --role-arn "arn:aws:iam::ACCOUNT_ID:role/YourStepFunctionRole" \
+  --definition file://state-machine.json
+```
+
+---
+
+#### **4. Invoke the Step Function**
+
+To start an execution:
+```bash
+aws stepfunctions start-execution \
+  --state-machine-arn "arn:aws:states:REGION:ACCOUNT_ID:stateMachine:SnsStepFunction"
+```
+
+You can also pass input like:
+```bash
+--input '{"key": "value"}'
+```
+
+---
+
+Want a Terraform or CDK version? Or want to do this in Python with boto3?
